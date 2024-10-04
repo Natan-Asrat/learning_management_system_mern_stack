@@ -17,6 +17,12 @@ export default function AuthProvider({children}){
         const data = await registerService(signUpFormData)
         console.log(data)
     }
+    function resetCredentials(){
+        setAuth({
+            authenticate: false,
+            user: null
+        })
+    }
     async function handleLoginUser(event){
         event.preventDefault();
         const data = await loginService(signInFormData);
@@ -65,7 +71,7 @@ export default function AuthProvider({children}){
         
 }
     useEffect(() => {checkAuth();}, [])
-    return <AuthContext.Provider value={{signInFormData, setSignInFormData, signUpFormData, setSignUpFormData, handleRegisterUser, handleLoginUser, auth}}>
+    return <AuthContext.Provider value={{signInFormData, setSignInFormData, signUpFormData, setSignUpFormData, handleRegisterUser, handleLoginUser, auth, resetCredentials}}>
         {loading? <Skeleton /> : children}
         </AuthContext.Provider>
 }
