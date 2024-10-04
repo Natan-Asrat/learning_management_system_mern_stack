@@ -1,10 +1,11 @@
 import React from 'react'
-
+import {Routes, Route} from 'react-router-dom'
+import AuthPage from './pages/auth'
 const App = () => {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <Routes>
+      <Route path="/auth" element={<AuthPage />}/>
+    </Routes>
   )
 }
 
