@@ -4,6 +4,7 @@ import InstructorCourses from '../../components/instructor-view/courses'
 import {Button} from '@/components/ui/button.tsx'
 import {Tabs, TabsContent} from '@/components/ui/tabs.tsx';
 import { AuthContext } from '../../context/auth-context';
+import InstructorDashboardComponent from '../../components/instructor-view/dashboard';
 
 const InstructorDashboard = () => {
   const [activeTab, setActivateTab] = useState('dashboard')
@@ -13,7 +14,7 @@ const InstructorDashboard = () => {
       icon: BarChart,
       label: 'Dashboard',
       value: 'dashboard',
-      component: <InstructorDashboard/>
+      component: <InstructorDashboardComponent/>
     }, 
     {
       icon: Book,
@@ -60,7 +61,7 @@ const InstructorDashboard = () => {
           <h1 className="text-3xl font-bold mb-8">
             Dashboard
           </h1>
-          <Tabs values={activeTab} onValueChange={setActivateTab}>
+          <Tabs value={activeTab} onValueChange={setActivateTab}>
             {
               menuItems.map(menuItem => <TabsContent key={menuItem.value} value={menuItem.value}>
                 {
