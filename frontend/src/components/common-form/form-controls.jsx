@@ -12,6 +12,7 @@ import {
 const FormControls = ({formControls=[], formData, setFormData}) => {
   function renderComponentByType(getControlItem){
     let element = null
+    const value = formData[getControlItem.name]
     switch(getControlItem.componentType){
         case "input":
             element = <Input 
@@ -19,11 +20,15 @@ const FormControls = ({formControls=[], formData, setFormData}) => {
              name={getControlItem.name} 
              placeholder={getControlItem.placeholder} 
              type={getControlItem.type} 
-              
+              value={value}
+              onChange={(e) => setFormData({...formData, [getControlItem.name]: e.target.value})}
              />
              break
         case 'select':
-            element = <Select>
+            element = <Select
+            value={value}
+            onValueChange={(value) => setFormData({...formData, [getControlItem.name]: value})}
+            >
                 <SelectTrigger className="w-full">
                     <SelectValue 
                     placeholder={getControlItem.label}
@@ -51,12 +56,16 @@ const FormControls = ({formControls=[], formData, setFormData}) => {
             id={getControlItem.name} 
             name={getControlItem.name} 
              placeholder={getControlItem.placeholder} 
-            />
+             value={value}
+             onChange={(e) => setFormData({...formData, [getControlItem.name]: e.target.value})}
+           />
         default:
             element = <Input id={getControlItem.name} 
             name={getControlItem.name} 
             placeholder={getControlItem.placeholder} 
-            />
+            value={value}
+            onChange={(e) => setFormData({...formData, [getControlItem.name]: e.target.value})}
+          />
     }
     return element
   
