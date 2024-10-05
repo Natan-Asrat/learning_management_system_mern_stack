@@ -17,6 +17,8 @@ const uploadMediaToCloudinary = async (filePath) => {
         return result;
     }catch(error){
         console.log(error);
+        fs.unlinkSync(filePath);
+
         throw new Error('Error uploading media to cloudinary');
     }
 }
