@@ -9,6 +9,8 @@ import {
     SelectValue,
   } from "@/components/ui/select"
   
+import { Textarea } from "@/components/ui/textarea"
+
 const FormControls = ({formControls=[], formData, setFormData}) => {
   function renderComponentByType(getControlItem){
     let element = null
@@ -37,7 +39,7 @@ const FormControls = ({formControls=[], formData, setFormData}) => {
 
                     </SelectValue>
                 </SelectTrigger>
-                <SelectContext>
+                <SelectContent>
                     {
                         (getControlItem.options && getControlItem.options.length > 0) 
                         ? 
@@ -48,11 +50,11 @@ const FormControls = ({formControls=[], formData, setFormData}) => {
                         : 
                         null
                     }
-                </SelectContext>
+                </SelectContent>
             </Select>
             break
         case 'textarea':
-            element = <TextArea 
+            element = <Textarea 
             id={getControlItem.name} 
             name={getControlItem.name} 
              placeholder={getControlItem.placeholder} 
