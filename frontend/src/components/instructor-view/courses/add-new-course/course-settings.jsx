@@ -4,9 +4,15 @@ import {Label} from "@/components/ui/label"
 import {Input} from "@/components/ui/input" 
 import { InstructorContext } from '../../../../context/instructor-context'
 import { mediaUploadService } from '../../../../services'
+import MediaProgressBar from '../../../media-progress-bar'
 
 const CourseSettings = () => {
-  const {courseLandingFormData, setCourseLandingFormData} = useContext(InstructorContext)
+  const {
+    courseLandingFormData, setCourseLandingFormData,
+    mediaUploadProgressPercentage, setMediaUploadProgressPercentage,
+    mediaUploadProgress, setMediaUploadProgress,
+  
+  } = useContext(InstructorContext)
   
   async function handleImageUploadChange(e) {
     const file = e.target.files[0]
@@ -14,13 +20,16 @@ const CourseSettings = () => {
       const formData = new FormData()
       formData.append('file', file)
       try{
-        const response = await mediaUploadService(formData);
+        setMediaUploadProgress(true);
+
+        const response = await mediaUploadService(formData, setMediaUploadProgressPercentage);
         if(response.success){
           setCourseLandingFormData({
             ...courseLandingFormData,
             image: response.data.url
         
           })
+          setMediaUploadProgress(false);
         }
       }catch(error){
         console.log(error)
@@ -34,13 +43,23 @@ const CourseSettings = () => {
         Course Settings
       </CardTitle>
     </CardHeader>
+    <div className="p-4">
+    {
+            mediaUploadProgress ? 
+            <MediaProgressBar
+            isMediaUploading={mediaUploadProgress}
+            progress={mediaUploadProgressPercentage}
+            /> : null
+          }
+    </div>
+    
     <CardContent>
       {
         courseLandingFormData?.image ? <img src={courseLandingFormData.image} /> 
         : 
         <div className="flex flex-col gap-3">
         <Label>
-          Upload Course Image
+          Upload Course Thumbnail
         </Label>
         <Input
         type="file"
