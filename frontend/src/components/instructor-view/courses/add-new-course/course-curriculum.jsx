@@ -8,6 +8,7 @@ import {Label} from '@/components/ui/label'
 import { courseCurriculumInitialFormData } from '../../../../config'
 import { mediaUploadService } from '../../../../services'
 import MediaProgressBar from '../../../media-progress-bar'
+import VideoPlayer from '../../../video-player'
 const CourseCurriculum= () => {
   const {
     courseCurriculumFormData, setCourseCurriculumFormData,
@@ -95,8 +96,8 @@ const CourseCurriculum= () => {
             /> : null
           }
           <div className="mt-4 space-y-4">
-            {courseCurriculumFormData.map((curriculumItem, index) => <div className='border p-5 rounded-md'>
-              <div key={`lecture-${index}-`} className="flex gap-5 items-center">
+            {courseCurriculumFormData.map((curriculumItem, index) => <div key={`lecture-${index}-`} className='border p-5 rounded-md'>
+              <div  className="flex gap-5 items-center">
                 <h3 className="font-semibold">
                   Lecture {index+1}
                 </h3>
@@ -122,13 +123,35 @@ const CourseCurriculum= () => {
                 </div>
                 
               </div>
+              <div className="p-4">
+
+              </div>
+              
               <div className="mt-6">
-                  <Input
-                  type="file"
-                  accept="video/*"
-                  className="mb-4"
-                  onChange={(event) => handleSingleLectureUpload(event, index)}
+              {
+                courseCurriculumFormData[index]?.videoUrl ?
+                <div className='flex gap-3'>
+                  <VideoPlayer 
+                  url = {courseCurriculumFormData[index]?.videoUrl}
+                  width="450px"
+                  height="200px"
                   />
+                  <Button > 
+                    Replace Video
+                  </Button>
+                  <Button className="bg-red-900">
+                    Delete Lecture
+                     </Button>
+                </div>
+                :
+                <Input
+                type="file"
+                accept="video/*"
+                className="mb-4"
+                onChange={(event) => handleSingleLectureUpload(event, index)}
+                />
+              }
+                  
                 </div>
               </div>)}
           </div>
