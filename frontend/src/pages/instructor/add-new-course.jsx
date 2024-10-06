@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import CourseLanding from "../../components/instructor-view/courses/add-new-course/course-landing";
 import CourseCurriculum from "../../components/instructor-view/courses/add-new-course/course-curriculum";
@@ -7,20 +7,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { InstructorContext } from "../../context/instructor-context";
 import { AuthContext } from "@/context/auth-context";
-import { addNewCourseService } from "../../services";
+import { addNewCourseService, fetchInstructorCourseDetailsService, updateCourseService } from "../../services";
 import {
   courseCurriculumInitialFormData,
   courseLandingInitialFormData,
 } from "../../config";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const AddNewCoursePage = () => {
   const {
     courseLandingFormData,
     courseCurriculumFormData,
     setCourseLandingFormData,
     setCourseCurriculumFormData,
+    currentEditedCourseId, setCurrentEditedCourseId
   } = useContext(InstructorContext);
   const { auth } = useContext(AuthContext);
+  const params = useParams();
   const navigate = useNavigate();
   function isEmpty(value) {
     if (Array.isArray(value)) {
@@ -51,6 +53,34 @@ const AddNewCoursePage = () => {
     return hasFreePreview;
   }
 
+  useEffect(() => {
+    if(params?.id){
+        setCurrentEditedCourseId(params?.id);
+
+    }else{
+       setCou 
+    }
+  }, [params?.id])
+
+  async function fetchCurrentCourseDetails(){
+    const response = await fetchInstructorCourseDetailsService(currentEditedCourseId)
+    if(response?.success){
+        const setCourseFormData = Object.keys(courseLandingInitialFormData).reduce((acc, key) => {
+            acc[key] = response?.data[key] || courseLandingInitialFormData[key]
+            return acc;
+        }, {});
+        setCourseLandingFormData(setCourseFormData);
+        setCourseCurriculumFormData(response?.data?.curriculum);
+
+    }
+
+  }
+  useEffect(() => {
+    if(currentEditedCourseId !==null){
+        fetchCurrentCourseDetails();
+    }
+  }, [currentEditedCourseId])
+
   async function handleCreateCourse() {
     const courseFinalFormData = {
       instructorId: auth?.user?.id,
@@ -62,17 +92,22 @@ const AddNewCoursePage = () => {
       isPublished: true,
     };
 
-    const response = await addNewCourseService(courseFinalFormData);
+    const response = 
+    currentEditedCourseId !== null ?
+    await updateCourseService(currentEditedCourseId, courseFinalFormData)
+    :
+    await addNewCourseService(courseFinalFormData);
     if (response?.success) {
       setCourseLandingFormData(courseLandingInitialFormData);
       setCourseCurriculumFormData(courseCurriculumInitialFormData);
       navigate(-1);
+      setCurrentEditedCourseId(null);
     }
   }
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between">
-        <h1 className="text-3xl font-extrabold mb-5">Create a new course</h1>
+        <h1 className="text-3xl font-extrabold mb-5">{currentEditedCourseId !== null ? "Edit Course" : "Create a new course"}</h1>
         <Button
           disabled={!validateFormData()}
           className="text-sm tracking-wider font-bold-px-8"

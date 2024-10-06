@@ -12,11 +12,14 @@ export default function InstructorProvider({children}){
 
     const [instructorCoursesList, setInstructorCoursesList] = useState([]);
 
+    const [currentEditedCourseId, setCurrentEditedCourseId] = useState(null);
+
     return <InstructorContext.Provider value={{
         courseLandingFormData , setCourseLandingFormData,
         courseCurriculumFormData, setCourseCurriculumFormData,
         mediaUploadProgress, setMediaUploadProgress,
         mediaUploadProgressPercentage, setMediaUploadProgressPercentage,
-        instructorCoursesList, setInstructorCoursesList
+        instructorCoursesList, setInstructorCoursesList,
+        currentEditedCourseId, setCurrentEditedCourseId
     }}>{children}</InstructorContext.Provider>
 }
