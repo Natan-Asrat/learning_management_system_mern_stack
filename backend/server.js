@@ -6,7 +6,7 @@ const app = express();
 const authRoutes = require('./routes/auth-routes/index');
 const mediaRoutes = require('./routes/instructor-routes/media-routes');
 const instructorCourseRoutes = require('./routes/instructor-routes/course-routes')
-
+const studentViewCourseRoutes = require('./routes/student-routes/course-routes')
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 const CLIENT_URL = process.env.CLIENT_URL;
@@ -24,6 +24,7 @@ mongoose.connect(MONGO_URI).then(() => {
     app.use('/auth', authRoutes);
     app.use('/media', mediaRoutes);
     app.use('/instructor/course', instructorCourseRoutes);
+    app.use('/student/course', studentViewCourseRoutes);
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     })

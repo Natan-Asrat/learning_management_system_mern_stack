@@ -66,3 +66,13 @@ export async function updateCourseService(id, formData){
     const {data} = await axiosInstance.put('/instructor/course/update/' + id, formData);
     return data;
 }
+
+export async function fetchStudentCourseListService(){
+    const {data} = await axiosInstance.get('/student/course/get')
+    return data
+}
+
+export async function fetchStudentCourseDetailsService(id){
+    const {data} = await axiosInstance.get('/student/course/details/'+id)
+    return data;
+}
