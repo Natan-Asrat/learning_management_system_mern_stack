@@ -155,7 +155,17 @@ const CourseCurriculum = () => {
       console.log(e);
     }
   }
-
+  async function handleDeleteLecture(index) {
+    let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+    const currentVideoPublicId = cpyCourseCurriculumFormData[index].public_id;
+    const deleteResponse = await mediaDeleteService(currentVideoPublicId);
+    if (deleteResponse.success) {
+      cpyCourseCurriculumFormData = cpyCourseCurriculumFormData.filter(
+        (item, i) => i !== index
+      );
+      setCourseCurriculumFormData(cpyCourseCurriculumFormData);   
+    }
+  }
   const bulkUploadInputRef = useRef(null);
 
   return (
@@ -235,7 +245,9 @@ const CourseCurriculum = () => {
                     <Button onClick={() => handleReplaceVideo(index)}>
                       Replace Video
                     </Button>
-                    <Button className="bg-red-900">Delete Lecture</Button>
+                    <Button
+                     onClick={() => handleDeleteLecture(index)}
+                     className="bg-red-900">Delete Lecture</Button>
                   </div>
                 ) : (
                   <Input
