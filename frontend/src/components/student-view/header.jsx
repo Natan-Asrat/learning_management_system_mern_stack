@@ -1,12 +1,12 @@
 import { GraduationCap, TvMinimalPlay } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useContext } from "react";
 import { AuthContext } from "../../context/auth-context";
 import {Button} from '@/components/ui/button'
 
 function StrudentViewCommonHeader() {
     const {resetCredentials} = useContext(AuthContext)
-
+    const navigate = useNavigate();
     function handleLogout() {
         resetCredentials()
         sessionStorage.clear()
@@ -24,7 +24,11 @@ function StrudentViewCommonHeader() {
                     </span>
                 </Link>
                 <div className="flex items-center space-x-1">
-                    <Button variant="ghost" className="font-medium text-[14px] md:text-[16px]"> Explore Courses</Button>
+                    <Button 
+                    onClick={() => navigate('/courses')}
+                    variant="ghost" 
+                    className="font-medium text-[14px] md:text-[16px]"
+                    > Explore Courses</Button>
                 </div>
             </div>
             <div className="flex items-center space-x-4">

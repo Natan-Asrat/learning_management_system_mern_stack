@@ -67,7 +67,7 @@ const StudentHomePage = () => {
                   ${item?.pricing}
                 </p>
                </div>
-            </div>) : <h1>No Courses Found!</h1>
+            </div>) : <h1 className="font-extrabold test-4xl ">No Courses Found!</h1>
           }
         </div>
       </section>
