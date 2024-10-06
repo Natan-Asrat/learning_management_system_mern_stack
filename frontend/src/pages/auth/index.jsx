@@ -15,8 +15,7 @@ import {
   } from "@/components/ui/card"
   
 const AuthPage = () => {
-    const [activeTab, setActiveTab] = useState('signin')
-  const {signInFormData, setSignInFormData, signUpFormData, setSignUpFormData, handleRegisterUser, handleLoginUser} = useContext(AuthContext)
+  const {activeTab, setActiveTab, signInFormData, setSignInFormData, signUpFormData, setSignUpFormData, handleRegisterUser, handleLoginUser} = useContext(AuthContext)
     function handleTabChange(event, newValue) {
     setActiveTab(newValue);
   }

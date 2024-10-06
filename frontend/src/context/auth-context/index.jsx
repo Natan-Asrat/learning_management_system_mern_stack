@@ -7,6 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function AuthProvider({children}){
     const [signInFormData, setSignInFormData] = useState(initialSignInFormData);
     const [signUpFormData, setSignUpFormData] = useState(initialSignUpFormData);
+    const [activeTab, setActiveTab] = useState('signin');
+
     const [auth, setAuth] = useState({
         authenticate: false,
         user: null
@@ -16,6 +18,7 @@ export default function AuthProvider({children}){
         event.preventDefault()
         const data = await registerService(signUpFormData)
         console.log(data)
+        setActiveTab('signin');
     }
     function resetCredentials(){
         setAuth({
@@ -71,7 +74,7 @@ export default function AuthProvider({children}){
         
 }
     useEffect(() => {checkAuth();}, [])
-    return <AuthContext.Provider value={{signInFormData, setSignInFormData, signUpFormData, setSignUpFormData, handleRegisterUser, handleLoginUser, auth, resetCredentials}}>
+    return <AuthContext.Provider value={{signInFormData, setSignInFormData, signUpFormData, setSignUpFormData, handleRegisterUser, handleLoginUser, auth, resetCredentials, activeTab, setActiveTab}}>
         {loading? <Skeleton /> : children}
         </AuthContext.Provider>
 }

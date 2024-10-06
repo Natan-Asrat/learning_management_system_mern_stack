@@ -9,6 +9,7 @@ import StudentHomePage from './pages/student/home'
 import NotFoundPage from './pages/not-found'
 import AddNewCoursePage from './pages/instructor/add-new-course'
 import StudentCourses from './pages/student/courses'
+import StudentCourseDetailsPage from './pages/student/course-details'
 const App = () => {
   const {auth} = useContext(AuthContext)
   return (
@@ -62,6 +63,12 @@ const App = () => {
           path="courses"
           element={
             <StudentCourses/>
+          }
+        ></Route>
+        <Route
+          path="course/details/:id"
+          element={
+            <StudentCourseDetailsPage/>
           }
         ></Route>
         <Route
