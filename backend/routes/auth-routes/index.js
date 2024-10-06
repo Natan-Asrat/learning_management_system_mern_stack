@@ -7,7 +7,7 @@ router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/check-auth', authenticate, (request, response)=>{
     const user = request.user;
-    response.status(200).json({
+    return response.status(200).json({
         success: true,
         message: 'User is authenticated',
         data: {

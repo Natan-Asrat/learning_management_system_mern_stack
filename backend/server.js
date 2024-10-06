@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const app = express();
 const authRoutes = require('./routes/auth-routes/index');
 const mediaRoutes = require('./routes/instructor-routes/media-routes');
+const instructorCourseRoutes = require('./routes/instructor-routes/course-routes')
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
@@ -22,6 +23,7 @@ mongoose.connect(MONGO_URI).then(() => {
     console.log("mongodb is connected");
     app.use('/auth', authRoutes);
     app.use('/media', mediaRoutes);
+    app.use('/instructor/course', instructorCourseRoutes);
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     })

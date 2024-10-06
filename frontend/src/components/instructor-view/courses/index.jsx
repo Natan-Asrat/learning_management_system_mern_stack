@@ -13,7 +13,7 @@ import {
 import { Delete, Edit } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
   
-const InstructorCourses = () => {
+const InstructorCourses = ({listOfCourses}) => {
     const navigate = useNavigate();
 
   return (
@@ -38,23 +38,28 @@ const InstructorCourses = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow>
-                    <TableCell className="font-medium">INV001</TableCell>
-                    <TableCell>Paid</TableCell>
-                    <TableCell>Credit Card</TableCell>
-                    <TableCell className="text-right">
-                        <Button 
-                        size="sm"
-                        variant="ghost">
-                            <Edit className="h-6 w-6"/>
-                        </Button>
-                        <Button 
-                        size="sm"
-                        variant="ghost">
-                            <Delete className="h-6 w-6"/>
-                        </Button>
-                    </TableCell>
-                    </TableRow>
+                    {
+                        listOfCourses && listOfCourses.length > 0 ?
+                         listOfCourses.map(course=> <TableRow key={course?.id}>
+                            <TableCell className="font-medium">{course?.title}</TableCell>
+                            <TableCell>{course?.students.length}</TableCell>
+                            <TableCell>${course?.students?.length * course?.pricing}</TableCell>
+                            <TableCell className="text-right">
+                                <Button 
+                                size="sm"
+                                variant="ghost">
+                                    <Edit className="h-6 w-6"/>
+                                </Button>
+                                <Button 
+                                size="sm"
+                                variant="ghost">
+                                    <Delete className="h-6 w-6"/>
+                                </Button>
+                            </TableCell>
+                            </TableRow>)
+                         : null
+                    }
+                    
                 </TableBody>
                 </Table>
 
