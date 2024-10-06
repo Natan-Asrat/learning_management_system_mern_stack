@@ -56,7 +56,7 @@ const InstructorCourses = ({listOfCourses}) => {
                                 <Button 
                                 onClick={
                                     () => {
-                                        setCurrentEditedCourseId(course?.id);
+                                        setCurrentEditedCourseId(course?._id);
                                         navigate(`/instructor/edit-course/${course?._id}`);
                                     }
                                 }

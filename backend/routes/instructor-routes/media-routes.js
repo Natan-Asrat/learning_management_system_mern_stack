@@ -46,5 +46,25 @@ router.delete('/delete/:id', async (request, response) => {
     }
 })
 
+router.post("/bulk-upload", upload.array('files', 10), async (request, response) => {
+    try{
+        const uploadPromises = request.files.map(fileItem => 
+            uploadMediaToCloudinary(fileItem.path)
+        )
+        const results = await Promise.all(uploadPromises);
+        return response.status(200).json({
+            success: true,
+            data: results
+        })
+
+    }catch(error){
+        console.log(error);
+        return response.status(500).json({
+            success: false,
+            message: 'Error uploading in bulk'
+        })
+    }
+})
+
 
 module.exports = router;

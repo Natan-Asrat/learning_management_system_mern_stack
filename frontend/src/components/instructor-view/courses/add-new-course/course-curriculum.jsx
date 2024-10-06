@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef } from "react";
 import { InstructorContext } from "../../../../context/instructor-context";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { courseCurriculumInitialFormData } from "../../../../config";
-import { mediaDeleteService, mediaUploadService } from "../../../../services";
+import {
+  mediaBulkUploadService,
+  mediaDeleteService,
+  mediaUploadService,
+} from "../../../../services";
 import MediaProgressBar from "../../../media-progress-bar";
 import VideoPlayer from "../../../video-player";
+import { Upload } from "lucide-react";
 const CourseCurriculum = () => {
   const {
     courseCurriculumFormData,
@@ -90,20 +95,94 @@ const CourseCurriculum = () => {
     const getCurrentVideoPublicId =
       cpyCourseCurriculumFormData[index].public_id;
     const deleteResponse = await mediaDeleteService(getCurrentVideoPublicId);
-    if(deleteResponse.success){
+    if (deleteResponse.success) {
       cpyCourseCurriculumFormData[index] = {
         ...cpyCourseCurriculumFormData[index],
-        videoUrl: '',
-        public_id: ''
-      }
-      setCourseCurriculumFormData(cpyCourseCurriculumFormData)
-    } 
+        videoUrl: "",
+        public_id: "",
+      };
+      setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+    }
   }
+  function handleOpenBulkUploadDialog() {
+    bulkUploadInputRef.current?.click();
+  }
+  function areAllCourseCurriculumFormDataObjectsEmpty(arr) {
+    return arr.every((obj) => {
+      return Object.entries(obj).every(([key, value]) => {
+        if (typeof value === "boolean") {
+          return true;
+        }
+        return value === "";
+      });
+    });
+  }
+  async function handleMediaBulkUpload(event) {
+    const selectedFiles = Array.from(event.target.files);
+    const bulkFormData = new FormData();
+
+    selectedFiles.forEach((fileItem) => bulkFormData.append("files", fileItem));
+
+    try {
+      setMediaUploadProgress(true);
+      const response = await mediaBulkUploadService(
+        bulkFormData,
+        setMediaUploadProgressPercentage
+      );
+
+      console.log(response, "bulk");
+      if (response?.success) {
+        let cpyCourseCurriculumFormdata =
+          areAllCourseCurriculumFormDataObjectsEmpty(courseCurriculumFormData)
+            ? []
+            : [...courseCurriculumFormData];
+
+        cpyCourseCurriculumFormdata = [
+          ...cpyCourseCurriculumFormdata,
+          ...response?.data.map((item, index) => ({
+            videoUrl: item?.url,
+            public_id: item?.public_id,
+            title: `Lecture ${
+              cpyCourseCurriculumFormdata.length + (index + 1)
+            }`,
+            freePreview: false,
+          })),
+        ];
+        setCourseCurriculumFormData(cpyCourseCurriculumFormdata);
+        setMediaUploadProgress(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const bulkUploadInputRef = useRef(null);
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex flex-row justify-between">
         <CardTitle>Create Course Curriculum</CardTitle>
+        <div>
+          <Input
+            type="file"
+            ref={bulkUploadInputRef}
+            accept="video/*"
+            id="bulk-media-upload"
+            multiple
+            className="hidden"
+            onChange={handleMediaBulkUpload}
+          />
+          <Button
+            as="label"
+            htmlFor="bulk-media-upload"
+            variant="outline"
+            className="cursor-pointer"
+            onClick={handleOpenBulkUploadDialog}
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            Bulk Upload
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Button

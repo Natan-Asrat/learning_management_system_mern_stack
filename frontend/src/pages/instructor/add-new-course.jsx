@@ -58,9 +58,10 @@ const AddNewCoursePage = () => {
         setCurrentEditedCourseId(params?.id);
 
     }else{
-       setCou 
+       setCurrentEditedCourseId(null); 
     }
   }, [params?.id])
+  console.log(currentEditedCourseId)
 
   async function fetchCurrentCourseDetails(){
     const response = await fetchInstructorCourseDetailsService(currentEditedCourseId)
