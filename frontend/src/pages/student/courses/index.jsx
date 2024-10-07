@@ -88,9 +88,9 @@ function StudentCourses() {
         const response = await checkCoursePurchasedInfoService(courseId, auth?.user?._id)
         if(response?.success){
             if(response?.data){
-                navigate(`/student-courses/${course?._id}`)
+                navigate(`/student-courses/${courseId}`)
             }else{
-                navigate(`/course/details/${course?._id}`);
+                navigate(`/course/details/${courseId}`);
             }
         }
          

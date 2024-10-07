@@ -3,7 +3,7 @@ const Course = require("../../models/course");
 const {
   getCourseDetailsById,
 } = require("../instructor-controller/course-controller");
-const StudentCourses = require("./student-courses-controller");
+const StudentCoursesModel = require("../../models/student_courses");
 
 const getAllStudentViewCourses = async (request, response) => {
     try{
@@ -64,9 +64,10 @@ const getStudentViewCourseDetails = async (request, response) => {
 }
 const checkCoursePurchased = async (request, response) => {
     try{
-        const {courseId, studentId} = request.params;
-        const studentCourses = await StudentCourses.findOne({userId: studentId});
-        const boughtCourse = studentCourses.courses.findIndex(item=> item.courseId === courseId) > -1;  
+        const {id, studentId} = request.params;
+        const studentCourses = await StudentCoursesModel.findOne({userId: studentId});
+
+        const boughtCourse = studentCourses.courses.findIndex(item=> item.courseId === id) > -1;  
         return response.status(200).json({ success: true, data: boughtCourse})
     }catch(error){
         console.log(error)
