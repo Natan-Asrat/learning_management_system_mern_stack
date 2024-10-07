@@ -5,7 +5,8 @@
 This project is a web application that includes both frontend and backend components. The frontend is built using React, while the backend is powered by Express.js and MongoDB.
 
 View live site [here](https://learning-management-system-by-natan.onrender.com)
-!(dashboard)(./screenshots/instructorDashboard.JPG)
+
+![dashboard](./screenshots/instructorDashboard.JPG)
 
 ## Table of Contents
 
@@ -41,8 +42,8 @@ The frontend is structured using React components and React Router for navigatio
    - Path: `/course/details/:id`
    - Component: `StudentCourseDetailsPage`
    - Description: Shows detailed information about a specific course.
-   - ![Course Details Page](./screenshots/courseDetail.JPG)
-   - ![Course Details Page](./screenshots/preview.JPG)
+   ![Course Details Page](./screenshots/courseDetail.JPG)
+   ![Course Details Page](./screenshots/preview.JPG)
 
 4. **Authentication Page**
    - Path: `/auth`
@@ -69,6 +70,57 @@ The frontend is structured using React components and React Router for navigatio
    - Component: `AddNewCoursePage`
    - Description: Enables instructors to edit existing courses.
     ![Instructor Dashboard](./screenshots/editCourse.JPG)
+8. **Explore Courses**
+   -Path: `/courses`
+   - Component: `StudentCourses`
+   - Description: Allows students to explore courses and filter by categories.
+   
+   ![Explore Courses](./screenshots/coursesList.JPG)
+   
+   - Filter with an existing course:
+   
+   ![Filters](./screenshots/filterWithExists.JPG)
+   
+   - Filter with no courses:
+   
+   ![Filters without courses](./screenshots/filterWithNoExists.JPG)
+
+9. **Preview and Buy Course**
+   - Path: `/course/details/:id`
+   - Component: `StudentCourseDetailsPage`
+   
+   ![Detail](./screenshots/courseDetail.JPG)
+
+   - Checkout
+   
+   ![order](./screenshots/order.JPG)
+
+   - Processing payment
+   
+   ![processing](./screenshots/processing.JPG)
+
+10. **View your purchased courses and Track Progress**
+   - Path: `/student-courses`
+   - Component: `StudentCoursesPage`
+   
+   ![purchased courses](./screenshots/paidCourses.JPG)
+
+   - Playing course
+   
+   ![playing courses](./screenshots/coursePlaying.JPG)
+
+   - Overview
+   
+   ![overview](./screenshots/courseOverview.JPG)
+
+   - Finishing course
+   
+   ![congrats](./screenshots/onCourseFinish.JPG)
+
+   - Courses that are not purchased (i.e. hacker tries to get around the routes in the url with course uuids)
+   
+   ![not purchased](./screenshots/unboughtCourse.JPG)
+
 
 ## Backend
 
