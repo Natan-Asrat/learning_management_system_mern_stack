@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { StudentContext } from "../../../context/student-context";
 import { useLocation, useParams } from "react-router-dom";
-import { fetchInstructorCourseDetailsService } from "../../../services";
+import { createPaymentService, fetchInstructorCourseDetailsService } from "../../../services";
 import {Skeleton} from '@/components/ui/skeleton';
 import {Globe, CheckCircle, PlayCircle, Lock} from 'lucide-react';
 import {Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card';
@@ -14,8 +14,9 @@ import {
     DialogTitle,
     DialogFooter,
     DialogClose
-  } from "@/components/ui/dialog"
-  
+  } from "@/components/ui/dialog";
+
+import { AuthContext } from '@/context/auth-context'
 
 function StudentCourseDetailsPage() {
     const {
@@ -25,9 +26,36 @@ function StudentCourseDetailsPage() {
         courseId,
         setCourseId} = useContext(StudentContext);
     const {id} = useParams();
-
+    const {auth} = useContext(AuthContext);
+    const [approveUrl, setApproveUrl] = useState('');   
     const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] = useState(null);
     const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
+    async function handleCreatePayment(){
+        const paymentPayload = {
+            userId: auth?.user?.id,
+            userName: auth?.user?.userName,
+            userEmail: auth?.user?.userEmail,
+            orderStatus: 'pending',
+            paymentMethod: 'paypal',
+            paymentStatus: 'initiated',
+            orderDate: new Date(),
+            paymentId: '',
+            payerId: '',
+            instructorId: studentCourseDetails?.instructorId,
+            instructorName: studentCourseDetails?.instructorName,
+            courseImage: studentCourseDetails?.image,
+            courseId: studentCourseDetails?._id,
+            courseTitle: studentCourseDetails?.title,
+            coursePricing: studentCourseDetails?.pricing,
+        };
+        const response = await createPaymentService(paymentPayload);
+        if(response.success){
+            sessionStorage.setItem('currentOrderId', JSON.stringify(response?.data?.orderId));
+            setApproveUrl(response?.data?.approveUrl);
+        }
+
+    }
+    
     useEffect(()=> {
         if(id){
             setCourseId(id);
@@ -73,6 +101,9 @@ function StudentCourseDetailsPage() {
     }, [displayCurrentVideoFreePreview])
 
     if(loading) return <Skeleton />
+    if(approveUrl !== ''){
+        window.location.href=approveUrl;
+    }
     return ( 
         <div className="mx-auto p-4">
             <div className="bg-gray-900 text-white p-8 rounded-t-lg">
@@ -175,7 +206,9 @@ function StudentCourseDetailsPage() {
                                         ${studentCourseDetails?.pricing}
                                     </span>
                                 </div>
-                                <Button className="w-full">
+                                <Button 
+                                onClick={handleCreatePayment}
+                                className="w-full">
                                     Buy Now
                                 </Button>
                             </CardContent>

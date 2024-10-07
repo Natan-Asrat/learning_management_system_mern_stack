@@ -33,7 +33,9 @@ function StrudentViewCommonHeader() {
             </div>
             <div className="flex items-center space-x-4">
                 <div className="flex gap-4 items-center">
-                    <div className="flex items-center gap-3">
+                    <div 
+                    onClick={()=> navigate('/student-courses')}
+                    className="cursor-pointer flex items-center gap-3">
                     <span className="font-extrabold md:text-xl text-[14px]">
                         My Courses
                     </span>

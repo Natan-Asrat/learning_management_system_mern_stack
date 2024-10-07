@@ -75,3 +75,13 @@ export async function fetchStudentCourseDetailsService(id){
     const {data} = await axiosInstance.get('/student/course/details/'+id)
     return data;
 }
+
+export async function createPaymentService(formData){
+    const {data} = await axiosInstance.post("/student/order/create", formData)
+    return data;
+}
+
+export async function capturePaymentService(paymentId, payerId, orderId){
+    const {data} = await axiosInstance.post("/student/order/capture", {paymentId, payerId, orderId})
+    return data;
+}
