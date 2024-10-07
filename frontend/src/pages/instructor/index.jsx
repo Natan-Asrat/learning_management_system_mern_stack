@@ -30,7 +30,7 @@ const InstructorDashboard = () => {
       icon: BarChart,
       label: 'Dashboard',
       value: 'dashboard',
-      component: <InstructorDashboardComponent/>
+      component: <InstructorDashboardComponent listOfCourses={instructorCoursesList}/>
     }, 
     {
       icon: Book,

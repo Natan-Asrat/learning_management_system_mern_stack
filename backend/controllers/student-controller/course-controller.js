@@ -67,7 +67,7 @@ const checkCoursePurchased = async (request, response) => {
         const {id, studentId} = request.params;
         const studentCourses = await StudentCoursesModel.findOne({userId: studentId});
 
-        const boughtCourse = studentCourses.courses.findIndex(item=> item.courseId === id) > -1;  
+        const boughtCourse = studentCourses?.courses.findIndex(item=> item.courseId === id) > -1;  
         return response.status(200).json({ success: true, data: boughtCourse})
     }catch(error){
         console.log(error)

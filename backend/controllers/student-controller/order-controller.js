@@ -147,14 +147,16 @@ const capturePayment = async (request, response) =>  {
 
         }
 
-        await Course.findByIdAndUpdate(order.courseId, { 
-            $addToSet: { students: {
+        await Course.findByIdAndUpdate(order.courseId, {
+            $addToSet: {
+              students: {
                 studentId: order.userId,
                 studentName: order.userName,
                 studentEmail: order.userEmail,
                 paidAmount: order.coursePricing,
-            } 
-        } });
+              },
+            },
+          });
         return response.status(200).json({
             success: true,
             message: "Order Confirmed",
