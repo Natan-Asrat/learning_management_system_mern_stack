@@ -95,3 +95,9 @@ export async function checkCoursePurchasedInfoService(courseId, studentId){
     const {data} = await axiosInstance.get('/student/course/purchase_info/'+ studentId +'/'+ courseId);
     return data;
 }
+
+
+export async function getCurrentCourseProgressService(userId, courseId ){
+    const {data} = await axiosInstance.get('/student/progress/course-progress/'+ userId +'/'+ courseId);
+    return data;
+}

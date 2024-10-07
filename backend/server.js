@@ -9,6 +9,9 @@ const instructorCourseRoutes = require('./routes/instructor-routes/course-routes
 const studentViewCourseRoutes = require('./routes/student-routes/course-routes')
 const orderRoutes = require('./routes/student-routes/order-routes')
 const studentBoughtCourseRoutes = require('./routes/student-routes/student-course-routes');
+const studentProgressRoutes = require('./routes/student-routes/course-progress')
+
+
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 const CLIENT_URL = process.env.CLIENT_URL;
@@ -29,6 +32,7 @@ mongoose.connect(MONGO_URI).then(() => {
     app.use('/student/course', studentViewCourseRoutes);
     app.use('/student/order', orderRoutes);
     app.use('/student/bought', studentBoughtCourseRoutes);
+    app.use('/student/progress', studentProgressRoutes)
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     })

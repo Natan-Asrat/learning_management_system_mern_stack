@@ -25,7 +25,7 @@ function StrudentViewCommonHeader() {
                 </Link>
                 <div className="flex items-center space-x-1">
                     <Button 
-                    onClick={() => navigate('/courses')}
+                    onClick={() => location.pathname.includes('/courses') ? null : navigate('/courses')}
                     variant="ghost" 
                     className="font-medium text-[14px] md:text-[16px]"
                     > Explore Courses</Button>
