@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../context/auth-context";
 import { StudentContext } from "../../../context/student-context";
 import { getCurrentCourseProgressService, markLectureAsViewedService, resetCourseProgressService } from "../../../services";
-import { Confetti } from "react-confetti";
+import  Confetti  from "react-confetti";
 import { useEffect } from "react";
 import {
   Dialog,
