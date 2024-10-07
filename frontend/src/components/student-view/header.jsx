@@ -43,7 +43,7 @@ function StrudentViewCommonHeader() {
 
                     </div>
                     <Button
-                    onClick={() => {handleLogout}}
+                    onClick={handleLogout}
                     >Sign Out</Button>
                 </div>
             </div>

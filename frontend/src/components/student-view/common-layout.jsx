@@ -1,12 +1,16 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import StrudentViewCommonHeader from './header'
 
 const StudentViewCommonLayout = () => {
+  const location = useLocation();
   return (
     <div>
-    
-        <StrudentViewCommonHeader />
+      {
+        !location.pathname.includes('/student-courses/') ?
+        <StrudentViewCommonHeader /> : null
+      }
+       
         <Outlet />
     </div>
   )
