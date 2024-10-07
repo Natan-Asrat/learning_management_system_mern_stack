@@ -4,6 +4,53 @@ const StudentCourses = require("../../models/student_courses");
 
 const markCurrentLectureAsViewed = async (request, response) => {
   try {
+    const { userId, courseId, lectureId } = request.body;
+    let progress = await CourseProgress.findOne({ userId, courseId });
+    if (!progress) {
+      progress = new CourseProgress({
+        userId,
+        courseId,
+        lecturesProgress: [{ lectureId, viewed: true, dateViewed: new Date() }],
+      });
+      await progress.save();
+    } else {
+      const lectureProgress = progress.lecturesProgress.find(
+        (item) => item.lectureId === lectureId
+      );
+      if (lectureProgress) {
+        lectureProgress.viewed = true;
+        lectureProgress.dateViewed = new Date();
+      } else {
+        progress.lecturesProgress.push({
+          lectureId,
+          viewed: true,
+          dateViewed: new Date(),
+        });
+      }
+      await progress.save();
+    }
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return response.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+    const allLecturesViewed =
+      progress.lecturesProgress.length === course.curriculum.length &&
+      progress.lecturesProgress.every((item) => item.viewed);
+
+    if (allLecturesViewed) {
+      progress.completed = true;
+      progress.completionDate = new Date();
+      await progress.save();
+    }
+
+    return response.status(200).json({
+      success: true,
+      message: "Lecture marked as viewed",
+      data: progress,
+    });
   } catch (error) {
     console.log(error);
     return response.status(500).json({
@@ -15,6 +62,24 @@ const markCurrentLectureAsViewed = async (request, response) => {
 
 const resetCurrentCourseProgress = async (request, response) => {
   try {
+    const { userId, courseId } = request.body;
+    const progress = await CourseProgress.findOne({ userId, courseId });
+    if (!progress) {
+      return response.status(404).json({
+        success: false,
+        message: "Course progress not found",
+      });
+    }
+    
+    progress.lecturesProgress = [];
+    progress.completed = false;
+    progress.completionDate = null;
+    await progress.save();
+    return response.status(200).json({
+      success: true,
+      message: "Course progress reset",
+      data: progress,
+    });
   } catch (error) {
     console.log(error);
     return response.status(500).json({
@@ -46,7 +111,10 @@ const getCurrentCourseProgress = async (request, response) => {
         userId,
         courseId,
       });
-      if (!currentUserCourseProgress || currentUserCourseProgress.lecturesProgress.length === 0) {
+      if (
+        !currentUserCourseProgress ||
+        currentUserCourseProgress.lecturesProgress.length === 0
+      ) {
         const course = await Course.findById(courseId);
         if (!course) {
           return response.status(404).json({

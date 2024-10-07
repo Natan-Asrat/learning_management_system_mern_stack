@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../../context/auth-context";
 import { StudentContext } from "../../../context/student-context";
-import { getCurrentCourseProgressService } from "../../../services";
+import { getCurrentCourseProgressService, markLectureAsViewedService, resetCourseProgressService } from "../../../services";
 import { Confetti } from "react-confetti";
 import { useEffect } from "react";
 import {
@@ -29,7 +29,7 @@ const StudentViewCourseProgressPage = () => {
   const [showCourseCompleteDialog, setShowCourseCompleteDialog] =
     useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
   async function fetchCurrentCourseProgress() {
     const response = await getCurrentCourseProgressService(auth?.user?._id, id);
     if (response?.success) {
@@ -43,16 +43,47 @@ const StudentViewCourseProgressPage = () => {
         });
       }
       if (response?.data?.completed) {
-        setCurrentLecture(resposne?.data?.courseDetails?.curriculum[0]);
+        setCurrentLecture(response?.data?.courseDetails?.curriculum[0]);
         setShowCourseCompleteDialog(true);
         setShowConfetti(true);
         return;
       }
       if (response?.data?.progress.length === 0) {
         setCurrentLecture(response?.data?.courseDetails?.curriculum[0]);
+      }else{
+        const lastIndex = response?.data?.progress.reduceRight(
+            (acc, obj, index) => {
+              return acc === -1 && obj.viewed ? index : acc;
+            },
+            -1
+          );
+        setCurrentLecture(
+            response?.data?.courseDetails?.curriculum[
+                lastIndex + 1
+            ]
+          );
+
       }
     }
   }
+  async function updateCourseProgress() {
+    if(currentLecture !==null && typeof currentLecture._id !== "undefined"){
+        const response = await markLectureAsViewedService(auth?.user?._id, id, currentLecture._id);
+        if(response?.success){
+            fetchCurrentCourseProgress();
+        }
+    }
+  }
+  async function handleRewatchCourse(){
+    const response = await resetCourseProgressService(auth?.user?._id, studentCourseProgress?.courseDetails?._id)
+    if(response?.success){
+        setCurrentLecture(null);
+        setShowConfetti(false);
+
+        setShowCourseCompleteDialog(false);
+        fetchCurrentCourseProgress();
+    }
+}
   useEffect(() => {
     fetchCurrentCourseProgress();
   }, [id]);
@@ -63,6 +94,18 @@ const StudentViewCourseProgressPage = () => {
       }, 5000);
     }
   }, [showConfetti]);
+  useEffect(()=> {
+    if(currentLecture?.progressValue===1){
+        updateCourseProgress();
+    }
+
+  }, [currentLecture])
+  function handleProgressUpdateCallback(progress){
+    setCurrentLecture({
+        ...currentLecture,
+        progressValue: progress,
+      });
+  }
   return (
     <div className="flex flex-col h-screen bg-[#1c1d1f] text-white">
       {showConfetti && <Confetti />}
@@ -95,9 +138,12 @@ const StudentViewCourseProgressPage = () => {
             isSideBarOpen ? "mr-[400px]" : ""
           } transition-all duration-300`}
         >
+            
           <VideoPlayer
             width="100%"
             height="500px"
+            onProgressUpdate = {handleProgressUpdateCallback}
+            progressUpdate = {currentLecture}
             url={currentLecture?.videoUrl}
           />
 
@@ -130,7 +176,14 @@ const StudentViewCourseProgressPage = () => {
                           key={item._id}
                           className="flex items-center space-x-2 text-sm text-white font-bold cursor-pointer"
                         >
-                          {item?.title}
+                            {studentCourseProgress?.progress?.find(
+                          (progressItem) => progressItem.lectureId === item._id
+                        )?.viewed ? (
+                          <Check className="h-4 w-4 text-green-500" />
+                        ) : (
+                          <Play className="h-4 w-4 " />
+                        )}
+                          <span>{item?.title}</span>
                         </div>
                       )
                     )}
@@ -169,7 +222,12 @@ const StudentViewCourseProgressPage = () => {
             <DialogTitle>Congratulations!</DialogTitle>
             <DialogDescription className="flex flex-col gap-3">
               <Label>You have completed the course.</Label>
-              <div className="flex flex-row gap-3"></div>
+              <div className="flex flex-row gap-3">
+                <Button onClick={() => navigate("/student-courses")}>
+                  My Courses Page
+                </Button>
+                <Button onClick={handleRewatchCourse}>Rewatch Course</Button>
+              </div>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

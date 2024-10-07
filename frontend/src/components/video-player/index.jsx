@@ -7,7 +7,7 @@ import {
     Volume2, RotateCcw, RotateCw, 
     Minimize, Maximize} from "lucide-react";
 
-const VideoPlayer = ({ width = "100%", height = "100%", url }) => {
+const VideoPlayer = ({ width = "100%", height = "100%", url, onProgressUpdate, progressData }) => {
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [muted, setMuted] = useState(false);
@@ -90,6 +90,21 @@ const VideoPlayer = ({ width = "100%", height = "100%", url }) => {
         }
     }, []
   )
+
+  useEffect(()=> {
+    if(played===1){
+      // console.log("current", progressData)
+      // console.log("current", {
+      //   ...progressData,
+      //   progressValue: played,
+      // })
+      onProgressUpdate(played);
+      // onProgressUpdate({
+      //   ...progressData,
+      //   progressValue: played,
+      // });
+    }
+  }, [played])
 
   return (
     <div

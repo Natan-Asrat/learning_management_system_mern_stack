@@ -101,3 +101,13 @@ export async function getCurrentCourseProgressService(userId, courseId ){
     const {data} = await axiosInstance.get('/student/progress/course-progress/'+ userId +'/'+ courseId);
     return data;
 }
+
+export async function markLectureAsViewedService( userId, courseId, lectureId){
+    const {data} = await axiosInstance.post("/student/progress/lecture-viewed", {userId, courseId, lectureId})
+    return data;
+}
+
+export async function resetCourseProgressService(userId, courseId){
+    const {data} = await axiosInstance.post("/student/progress/reset-progress", {userId, courseId})
+    return data;
+}
