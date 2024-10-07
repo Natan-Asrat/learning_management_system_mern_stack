@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: "https://learning-management-system-mern-stack.vercel.app/"
+    baseURL: "https://learning-management-system-backend-jij0.onrender.com",
+    withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(config=>{
