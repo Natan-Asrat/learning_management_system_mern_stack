@@ -9,6 +9,8 @@ const StudentProvider = ({ children }) => {
   const [studentCourseDetails, setStudentCourseDetails] = useState(null);
   const [courseId, setCourseId] = useState(null);
 
+  const [studentBoughtCoursesList, setStudentBoughtCoursesList] = useState([]); 
+
   return (
     <StudentContext.Provider
       value={{
@@ -20,6 +22,7 @@ const StudentProvider = ({ children }) => {
         setStudentCourseDetails,
         courseId,
         setCourseId,
+        studentBoughtCoursesList, setStudentBoughtCoursesList,
       }}
     >
       {children}

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { StudentContext } from "../../../context/student-context";
-import { useLocation, useParams } from "react-router-dom";
-import { createPaymentService, fetchInstructorCourseDetailsService } from "../../../services";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { checkCoursePurchasedInfoService, createPaymentService, fetchInstructorCourseDetailsService } from "../../../services";
 import {Skeleton} from '@/components/ui/skeleton';
 import {Globe, CheckCircle, PlayCircle, Lock} from 'lucide-react';
 import {Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card';
@@ -30,9 +30,10 @@ function StudentCourseDetailsPage() {
     const [approveUrl, setApproveUrl] = useState('');   
     const [displayCurrentVideoFreePreview, setDisplayCurrentVideoFreePreview] = useState(null);
     const [showFreePreviewDialog, setShowFreePreviewDialog] = useState(false);
+    const navigate = useNavigate();
     async function handleCreatePayment(){
         const paymentPayload = {
-            userId: auth?.user?.id,
+            userId: auth?.user?._id,
             userName: auth?.user?.userName,
             userEmail: auth?.user?.userEmail,
             orderStatus: 'pending',
@@ -62,6 +63,11 @@ function StudentCourseDetailsPage() {
         }
     }, [id])
     async function fetchStudentCourseDetails(id) {
+        const checkPaid = await checkCoursePurchasedInfoService(id, auth?.user?._id);
+        if(checkPaid?.success && checkPaid?.data){
+            navigate(`/student-courses/${id}`)
+        }
+        
         const response = await fetchInstructorCourseDetailsService(id);
         if(response?.success){
             setStudentCourseDetails(response?.data);

@@ -84,7 +84,7 @@ const AddNewCoursePage = () => {
 
   async function handleCreateCourse() {
     const courseFinalFormData = {
-      instructorId: auth?.user?.id,
+      instructorId: auth?.user?._id,
       instructorName: auth?.user?.userName,
       date: new Date(),
       ...courseLandingFormData,

@@ -6,10 +6,11 @@ import { useContext, useEffect, useState } from "react";
 import {Checkbox} from "@/components/ui/checkbox"
 import {Label} from "@/components/ui/label" 
 import { StudentContext } from "../../../context/student-context";
-import { fetchStudentCourseListService } from "../../../services";
+import { checkCoursePurchasedInfoService, fetchStudentCourseListService } from "../../../services";
 import { Card, CardContent, CardTitle} from "@/components/ui/card";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {Skeleton} from "@/components/ui/skeleton";
+import { AuthContext } from "../../../context/auth-context";
 function createSearchParamsHelper(filterParams) {
     const queryParams = [];
     if (!filterParams || typeof filterParams !== 'object') {
@@ -31,6 +32,7 @@ function StudentCourses() {
     const { loading, setLoading, studentCoursesList, setStudentCoursesList } =
     useContext(StudentContext);
     const navigate = useNavigate();
+    const {auth} = useContext(AuthContext)
     const [searchParams, setSearchParams] = useSearchParams();
     async function fetchStudentCourseList(filters, sort) {
         const query = new URLSearchParams({
@@ -80,6 +82,18 @@ function StudentCourses() {
         }
         setFilters(cpyFilters);
         sessionStorage.setItem('filters', JSON.stringify(cpyFilters));
+    }
+
+    async function handleCourseNavigate(courseId){
+        const response = await checkCoursePurchasedInfoService(courseId, auth?.user?._id)
+        if(response?.success){
+            if(response?.data){
+                navigate(`/student-courses/${course?._id}`)
+            }else{
+                navigate(`/course/details/${course?._id}`);
+            }
+        }
+         
     }
 
     
@@ -156,7 +170,7 @@ function StudentCourses() {
                         studentCoursesList && studentCoursesList.length > 0 ?
                         
                         studentCoursesList.map(course=> (
-                            <Card onClick={()=> navigate(`/course/details/${course?._id}`)} key={course?._id} className="cursor-pointer">
+                            <Card onClick={() => handleCourseNavigate(course?._id)} key={course?._id} className="cursor-pointer">
                                 <CardContent className="flex gap-4 p-4">
                                     <div className="w-48 h-32 flex-shrink-0">
                                         <img src={course?.image} className="w-full h-full object-cover" />

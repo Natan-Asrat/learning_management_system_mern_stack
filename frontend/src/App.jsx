@@ -12,6 +12,7 @@ import StudentCourses from './pages/student/courses'
 import StudentCourseDetailsPage from './pages/student/course-details'
 import PaypalPaymentReturnPage from './pages/student/payment-return'
 import StudentCoursesPage from './pages/student/student-courses'
+import StudentViewCourseProgressPage from './pages/student/student-progress'
 const App = () => {
   const {auth} = useContext(AuthContext)
   return (
@@ -83,6 +84,12 @@ const App = () => {
           path="student-courses"
           element={
             <StudentCoursesPage/>
+          }
+        ></Route>
+        <Route
+          path="student-courses/:id"
+          element={
+            <StudentViewCourseProgressPage/>
           }
         ></Route>
         <Route

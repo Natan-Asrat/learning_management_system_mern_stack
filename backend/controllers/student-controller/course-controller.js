@@ -1,8 +1,9 @@
-const course = require('../../models/course');
-const Course = require('../../models/course');
-const { getCourseDetailsById } = require('../instructor-controller/course-controller');
-
-
+const course = require("../../models/course");
+const Course = require("../../models/course");
+const {
+  getCourseDetailsById,
+} = require("../instructor-controller/course-controller");
+const StudentCourses = require("./student-courses-controller");
 
 const getAllStudentViewCourses = async (request, response) => {
     try{
@@ -61,8 +62,21 @@ const getStudentViewCourseDetails = async (request, response) => {
         return response.status(500).json({ success: false, message: "Internal Server Error"})
     }
 }
+const checkCoursePurchased = async (request, response) => {
+    try{
+        const {courseId, studentId} = request.params;
+        const studentCourses = await StudentCourses.findOne({userId: studentId});
+        const boughtCourse = studentCourses.courses.findIndex(item=> item.courseId === courseId) > -1;  
+        return response.status(200).json({ success: true, data: boughtCourse})
+    }catch(error){
+        console.log(error)
+        return response.status(500).json({ success: false, message: "Internal Server Error"})
+    }
+    
+}
 
 module.exports = {
-    getAllStudentViewCourses,
-    getStudentViewCourseDetails
-}
+  getAllStudentViewCourses,
+  getStudentViewCourseDetails,
+  checkCoursePurchased
+};
