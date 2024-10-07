@@ -2,17 +2,31 @@ import React, { useContext, useEffect } from "react";
 import { courseCategories } from "../../../config";
 import { Button } from "@/components/ui/button";
 import { StudentContext } from "../../../context/student-context";
-import { fetchStudentCourseListService } from "../../../services";
+import { checkCoursePurchasedInfoService, fetchStudentCourseListService } from "../../../services";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/auth-context";
 const StudentHomePage = () => {
   const { studentCoursesList, setStudentCoursesList } =
     useContext(StudentContext);
-
+    const {auth} = useContext(AuthContext);
+    const navigate = useNavigate();
   async function fetchStudentCourseList() {
     const response = await fetchStudentCourseListService();
     if (response?.success) {
       setStudentCoursesList(response?.data);
     }
   }
+  async function handleCourseNavigate(courseId){
+    const response = await checkCoursePurchasedInfoService(courseId, auth?.user?._id)
+    if(response?.success){
+        if(response?.data){
+            navigate(`/student-courses/${courseId}`)
+        }else{
+            navigate(`/course/details/${courseId}`);
+        }
+    }
+     
+}
   useEffect(() => {
     fetchStudentCourseList();
   }, []);
@@ -51,7 +65,7 @@ const StudentHomePage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           {
             studentCoursesList && studentCoursesList.length > 0 ?
-            studentCoursesList.map(item => <div className="border rounded-lg overflow-hidden shadow cursor-pointer">
+            studentCoursesList.map(item => <div onClick={()=> handleCourseNavigate(item._id)} key={item._id} className="border rounded-lg overflow-hidden shadow cursor-pointer">
               <img src={item?.image} 
               width={300}
               height={150}
