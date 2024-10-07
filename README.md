@@ -4,6 +4,9 @@
 
 This project is a web application that includes both frontend and backend components. The frontend is built using React, while the backend is powered by Express.js and MongoDB.
 
+View live site [here](https://learning-management-system-by-natan.onrender.com)
+!(dashboard)(./screenshots/instructorDashboard.JPG)
+
 ## Table of Contents
 
 - [Frontend](#frontend)
